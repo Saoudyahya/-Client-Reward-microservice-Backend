@@ -1,0 +1,33 @@
+version: '3'
+services:
+  spring-boot-app:
+    build: .
+    ports:
+      - "9092:9092"
+    depends_on:
+      - mysql-db-client
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db-client:3306/clientMicroservice
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD:
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQL8Dialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://localhost:8761/eureka/
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
+
+  mysql-db-client:
+    container_name: mysql-container
+    image: mysql:latest
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: true
+      MYSQL_DATABASE: clientMicroservice
+    volumes:
+      - mysql-data:/var/lib/mysql2
+
+volumes:
+  mysql-data:
+
